@@ -894,14 +894,12 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_paragraph(self, node):
         dprint()
-        raise nodes.SkipNode
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
         #    self.new_state(0)
 
     def depart_paragraph(self, node):
         dprint()
-        raise nodes.SkipNode
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
         #    self.end_state()
