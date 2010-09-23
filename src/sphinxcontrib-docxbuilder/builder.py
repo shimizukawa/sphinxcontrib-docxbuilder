@@ -73,7 +73,8 @@ class DocxBuilder(Builder):
         doctree = self.assemble_doctree()
         self.info()
         self.info(bold('writing... '), nonl=True)
-        self.write_doc(self.config.master_doc, doctree)
+        docname = "%s-%s" % (self.config.project, self.config.version)
+        self.write_doc(docname, doctree)
         self.info('done')
 
     def write_doc(self, docname, doctree):
