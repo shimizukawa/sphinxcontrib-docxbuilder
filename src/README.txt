@@ -3,7 +3,7 @@ Sphinx docx builder extension.
 Features
 ========
 
-* Generate docx file as Sphinx builder.
+* Generate single docx file.
 
 Setup
 =====
