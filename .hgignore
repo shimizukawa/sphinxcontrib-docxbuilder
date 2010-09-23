@@ -7,4 +7,6 @@ develop-eggs
 dist
 eggs
 parts
+examples/.doctrees
+examples/.*.docx
 src/.*.egg-info
