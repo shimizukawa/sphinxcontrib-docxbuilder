@@ -10,7 +10,6 @@
 """
 
 import re
-import textwrap
 
 from docutils import nodes, writers
 
@@ -106,7 +105,7 @@ class DocxTranslator(nodes.NodeVisitor):
             self.states[-1] = []
             self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
 
-    def end_state(self, wrap=False, end=[''], first=None):
+    def end_state(self, end=[''], first=None):
         dprint()
         result = self.states.pop()
         if first is not None and result:
@@ -244,7 +243,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         raise nodes.SkipNode
         ## XXX: wrap signatures in a way that makes sense
-        #self.end_state(wrap=False, end=None)
+        #self.end_state(end=None)
 
     def visit_desc_name(self, node):
         dprint()
@@ -370,7 +369,7 @@ class DocxTranslator(nodes.NodeVisitor):
         #    else:
         #        self.add_text('%s    ' % (' '*len(lastname)))
         #    self.add_text(production.astext() + '\n')
-        #self.end_state(wrap=False)
+        #self.end_state()
         #raise nodes.SkipNode
 
     def visit_seealso(self, node):
@@ -553,7 +552,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
         self.docbody.append(docx.table(fmted_rows))
         self.table = None
-        self.end_state(wrap=False)
+        self.end_state()
 
     def visit_acks(self, node):
         dprint()
@@ -776,7 +775,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_literal_block(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.end_state(wrap=False)
+        #self.end_state()
 
     def visit_doctest_block(self, node):
         dprint()
@@ -786,7 +785,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_doctest_block(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.end_state(wrap=False)
+        #self.end_state()
 
     def visit_line_block(self, node):
         dprint()
@@ -796,7 +795,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_line_block(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.end_state(wrap=False)
+        #self.end_state()
 
     def visit_line(self, node):
         dprint()
