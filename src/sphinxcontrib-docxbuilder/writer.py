@@ -114,10 +114,6 @@ class DocxTranslator(nodes.NodeVisitor):
         def do_format():
             if not toformat:
                 return
-            #if wrap:
-            #    res = textwrap.wrap(''.join(toformat), width=MAXWIDTH-maxindent)
-            #else:
-            #    res = ''.join(toformat).splitlines()
             res = ''.join(toformat).splitlines()
             if end:
                 res += end
