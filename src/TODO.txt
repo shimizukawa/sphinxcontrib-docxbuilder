@@ -28,3 +28,4 @@ Known Issues
 * figure directive's caption become normal paragraph (not bundled with image).
 * python-docx using template's media(image) folder for temporarily, then some
   independent document's media files are shared unexpectly.
+* image directive break docx format (maybe very large file are included)
