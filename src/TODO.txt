@@ -18,6 +18,7 @@ Functionals
 Environments
 -------------
 * docx builder need python-docx package, but not distributed at PyPI.
+* python-docx can't generate <w:i> (italic) and <w:b> (bold) mode tag.
 
 Known Issues
 -------------

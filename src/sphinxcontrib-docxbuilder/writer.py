@@ -109,7 +109,7 @@ class DocxTranslator(nodes.NodeVisitor):
             result = []
             for itemindent, item in content:
                 result.append(item)
-            self.docbody.append(docx.paragraph(''.join(result)))
+            self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
 
     def end_state(self, wrap=False, end=[''], first=None):
         dprint()
@@ -677,7 +677,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
         self.stateindent.pop()
-        self.docbody.append(docx.paragraph(text, self.list_style[-1]))
+        self.docbody.append(docx.paragraph(text, self.list_style[-1], breakbefore=True))
 
     def visit_definition_list_item(self, node):
         dprint()
@@ -942,63 +942,51 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_emphasis(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def depart_emphasis(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def visit_literal_emphasis(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def depart_literal_emphasis(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def visit_strong(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('**')
 
     def depart_strong(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('**')
 
     def visit_abbreviation(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('')
 
     def depart_abbreviation(self, node):
         dprint()
-        raise nodes.SkipNode
         #if node.hasattr('explanation'):
         #    self.add_text(' (%s)' % node['explanation'])
 
     def visit_title_reference(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def depart_title_reference(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('*')
 
     def visit_literal(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('``')
 
     def depart_literal(self, node):
         dprint()
-        raise nodes.SkipNode
         #self.add_text('``')
 
     def visit_subscript(self, node):
