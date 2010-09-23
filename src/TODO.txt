@@ -26,4 +26,4 @@ Known Issues
 * some indented block output are not working correctly yet.
     * block-quote
     * literal-block
-
+* figure directive's caption become normal paragraph (not bundled with image).

@@ -18,6 +18,7 @@ from sphinx.locale import admonitionlabels, versionlabels, _
 
 import docx
 import sys
+import os
 
 import logging
 logging.basicConfig(filename='docx.log', filemode='w', level=logging.INFO,
@@ -43,6 +44,10 @@ def dprint(_func=None, **kw):
     logger.info(' '.join([_func, text]))
 
 
+class DocxContaner(object):
+    pass
+
+
 class DocxWriter(writers.Writer):
     supported = ('docx',)
     settings_spec = ('No options here.', '', ())
@@ -53,36 +58,40 @@ class DocxWriter(writers.Writer):
     def __init__(self, builder):
         writers.Writer.__init__(self)
         self.builder = builder
-        self.docx_document = docx.newdocument()
-        self.docbody = self.docx_document.xpath(
+        dc = DocxContaner()
+        dc.document = docx.newdocument()
+        dc.docbody = dc.document.xpath(
                 '/w:document/w:body', namespaces=docx.nsprefixes)[0]
+        dc.relationships = docx.relationshiplist()
+        dc.appprops = docx.appproperties()
+        dc.contenttypes = docx.contenttypes()
+        dc.websettings = docx.websettings()
+        self.docx_container = dc
 
     def save(self, filename):
-        relationships = docx.relationshiplist()
-        appprops = docx.appproperties()
-        contenttypes = docx.contenttypes()
-        websettings = docx.websettings()
-        wordrelationships = docx.wordrelationships(relationships)
+        dc = self.docx_container
+        wordrelationships = docx.wordrelationships(dc.relationships)
         coreprops = docx.coreproperties(
                 title='Python docx demo',
                 subject='A practical example of making docx from Python',
                 creator='Mike MacCana',
                 keywords=['python','Office Open XML','Word'])
 
-        docx.savedocx(self.docx_document, coreprops, appprops, contenttypes,
-                websettings, wordrelationships, filename)
+        docx.savedocx(dc.document, coreprops, dc.appprops, dc.contenttypes,
+                dc.websettings, wordrelationships, filename)
 
     def translate(self):
-        visitor = DocxTranslator(self.document, self.builder, self.docbody)
+        visitor = DocxTranslator(self.document, self.builder, self.docx_container)
         self.document.walkabout(visitor)
         self.output = '' #visitor.body
 
 
 class DocxTranslator(nodes.NodeVisitor):
 
-    def __init__(self, document, builder, docbody):
+    def __init__(self, document, builder, docx_container):
         self.builder = builder
-        self.docbody = docbody
+        self.docx_container = docx_container
+        self.docbody = docx_container.docbody
         nodes.NodeVisitor.__init__(self, document)
 
         self.states = [[]]
@@ -337,14 +346,13 @@ class DocxTranslator(nodes.NodeVisitor):
         #self.end_state()
 
     def visit_figure(self, node):
+        # FIXME: figure text become normal paragraph instead of caption.
         dprint()
-        raise nodes.SkipNode
-        #self.new_state()
+        self.new_state()
 
     def depart_figure(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.end_state()
+        self.end_state()
 
     def visit_caption(self, node):
         dprint()
@@ -565,8 +573,15 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_image(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.add_text(_('[image]'))
+        uri = node.attributes['uri']
+        srcdir = self.builder.env.srcdir
+        dc = self.docx_container
+        dc.relationships, picpara = docx.picture(
+                dc.relationships, uri, '', srcdir=srcdir)
+        self.docbody.append(picpara)
+
+    def depart_image(self, node):
+        dprint()
 
     def visit_transition(self, node):
         dprint()
