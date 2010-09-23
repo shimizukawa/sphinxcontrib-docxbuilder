@@ -21,15 +21,18 @@ import docx
 import sys
 
 
-def dprint(**kw):
+def dprint(_func=None, **kw):
     f = sys._getframe(1)
     if kw:
         text = ', '.join('%s = %s' % (k,v) for k,v in kw.items())
     else:
         text = dict((k,v) for k,v in f.f_locals.items() if k != 'self')
 
+    if _func is None:
+        _func = f.f_code.co_name
+
     try:
-        print >>sys.stderr, '###', f.f_code.co_name, text
+        print >>sys.stderr, '###', _func, text
     except:
         print >>sys.stderr, ''
 
@@ -134,6 +137,23 @@ class DocxTranslator(nodes.NodeVisitor):
                 result[1] = (itemindent, item[1:])
         self.states[-1].extend(result)
 
+    def visit_start_of_file(self, node):
+        dprint()
+        self.new_state(0)
+
+        # FIXME: visit_start_of_file not close previous section.
+        # sectionlevel keep previous and new file's heading level start with
+        # previous + 1.
+        # This quick hack reset sectionlevel per file.
+        # (BTW Sphinx has heading levels per file? or entire document?)
+        self.sectionlevel = 0
+
+        self.docbody.append(docx.pagebreak(type='page', orient='portrait'))
+
+    def depart_start_of_file(self, node):
+        dprint()
+        self.end_state()
+
     def visit_document(self, node):
         dprint()
         self.new_state(0)
@@ -153,7 +173,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_section(self, node):
         dprint()
         self.ensure_state()
-        self.sectionlevel -= 1
+        self.sectionlevel = 0 if self.sectionlevel == 0 else self.sectionlevel - 1
 
     def visit_topic(self, node):
         pass
@@ -211,7 +231,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
         self.stateindent.pop()
-        dprint(text=repr(text), level=self.sectionlevel)
+        dprint(_func='* heading', text=repr(text), level=self.sectionlevel)
         self.docbody.append(docx.heading(text, self.sectionlevel))
 
     def visit_subtitle(self, node):
