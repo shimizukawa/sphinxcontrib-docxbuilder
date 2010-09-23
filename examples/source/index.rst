@@ -60,4 +60,5 @@ Email <python.docx@librelist.com>
     :hidden:
 
     index-ja
+    restructuredtext
 

@@ -768,14 +768,13 @@ class DocxTranslator(nodes.NodeVisitor):
         #self.end_state()
 
     def visit_literal_block(self, node):
+        # FIXME: working but broken.
         dprint()
-        raise nodes.SkipNode
-        #self.new_state()
+        self.new_state()
 
     def depart_literal_block(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.end_state()
+        self.end_state()
 
     def visit_doctest_block(self, node):
         dprint()
@@ -806,14 +805,13 @@ class DocxTranslator(nodes.NodeVisitor):
         pass
 
     def visit_block_quote(self, node):
+        # FIXME: working but broken.
         dprint()
-        raise nodes.SkipNode
-        #self.new_state()
+        self.new_state()
 
     def depart_block_quote(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.end_state()
+        self.end_state()
 
     def visit_compact_paragraph(self, node):
         dprint()
