@@ -8,12 +8,12 @@ Functionals
 * reset number for non-continuous numbered list
 * add page-break directive
 * implement many many directives
-    * image and figure
     * note
     * warning
     * code highlighting
     * and etc....
 * using dotx template
+* some emphasis (italic, bold)
 
 Environments
 -------------
