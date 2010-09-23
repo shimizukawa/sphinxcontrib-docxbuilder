@@ -5,6 +5,9 @@ Functionals
 ------------
 * singlefile output (currently can output file per file output only)
 * table output
+* toctree generation (dispose toctree output? create by docx function?)
+* reset number for non-continuous numbered list
+* add page-break directive
 * implement many many directives
     * image and figure
     * note
