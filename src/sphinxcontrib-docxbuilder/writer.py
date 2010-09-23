@@ -88,6 +88,11 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def new_state(self, indent=2):
         dprint()
+        self.ensure_state()
+        self.states.append([])
+        self.stateindent.append(indent)
+
+    def ensure_state(self):
         if self.states and self.states[-1]:
             content = self.states[-1]
             self.states[-1] = []
@@ -95,8 +100,6 @@ class DocxTranslator(nodes.NodeVisitor):
             for itemindent, item in content:
                 result.append(item)
             self.docbody.append(docx.paragraph(''.join(result)))
-        self.states.append([])
-        self.stateindent.append(indent)
 
     def end_state(self, wrap=False, end=[''], first=None):
         dprint()
@@ -149,6 +152,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def depart_section(self, node):
         dprint()
+        self.ensure_state()
         self.sectionlevel -= 1
 
     def visit_topic(self, node):
