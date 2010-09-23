@@ -1,11 +1,12 @@
 =================================
-Welcome to Python's docx module
+Python docx モジュールへようこそ
 =================================
 
-Make and edit docx in 200 lines of pure Python
-===============================================
-
-The module was created when I was looking for a Python support for MS Word .doc files on PyPI and Stackoverflow. Unfortunately, the only solutions I could find used:
+Pythonのコード200行だけでdocxを作り変更するぜ
+==============================================
+このモジュールが作られたきっかけは、私がPythonでMS Word .doc ファイルを
+扱えないかPyPIやStackoverflowで探したことだ。残念ながら見つけることが
+出来たのは以下の方法だけだった:
 
 1. COM automation
 2. .net or Java
@@ -53,10 +54,4 @@ Ideas? Questions? Want to contribute?
 ======================================
 
 Email <python.docx@librelist.com>
-
-
-.. toctree::
-    :maxdepth: 1
-
-    index-ja
 
