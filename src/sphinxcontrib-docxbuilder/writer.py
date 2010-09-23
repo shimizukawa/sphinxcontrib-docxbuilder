@@ -543,57 +543,15 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         lines = self.table[1:]
         fmted_rows = []
-        #colwidths = self.table[0]
-        #realwidths = colwidths[:]
-        #separator = 0
+
         # don't allow paragraphs in table cells for now
         for line in lines:
             if line == 'sep':
                 pass
-                #separator = len(fmted_rows)
             else:
                 fmted_rows.append(line)
 
-                #cells = []
-                #for i, cell in enumerate(line):
-                #    par = textwrap.wrap(cell, width=colwidths[i])
-                #    if par:
-                #        maxwidth = max(map(len, par))
-                #    else:
-                #        maxwidth = 0
-                #    realwidths[i] = max(realwidths[i], maxwidth)
-                #    cells.append(par)
-                #fmted_rows.append(cells)
-
-        #def writesep(char='-'):
-        #    out = ['+']
-        #    for width in realwidths:
-        #        out.append(char * (width+2))
-        #        out.append('+')
-        #    self.add_text(''.join(out) + '\n')
-
-        #def writerow(row):
-        #    lines = map(None, *row)
-        #    for line in lines:
-        #        out = ['|']
-        #        for i, cell in enumerate(line):
-        #            if cell:
-        #                out.append(' ' + cell.ljust(realwidths[i]+1))
-        #            else:
-        #                out.append(' ' * (realwidths[i] + 2))
-        #            out.append('|')
-        #        self.add_text(''.join(out) + '\n')
-
-        #for i, row in enumerate(fmted_rows):
-        #    if separator and i == separator:
-        #        writesep('=')
-        #    else:
-        #        writesep('-')
-        #    writerow(row)
-        #writesep('-')
-
         self.docbody.append(docx.table(fmted_rows))
-
         self.table = None
         self.end_state(wrap=False)
 
