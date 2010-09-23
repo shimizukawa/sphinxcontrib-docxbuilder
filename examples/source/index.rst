@@ -57,6 +57,7 @@ Email <python.docx@librelist.com>
 
 .. toctree::
     :maxdepth: 1
+    :hidden:
 
     index-ja
 
