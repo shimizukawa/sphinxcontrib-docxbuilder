@@ -87,62 +87,40 @@ class DocxTranslator(nodes.NodeVisitor):
         nodes.NodeVisitor.__init__(self, document)
 
         self.states = [[]]
-        self.stateindent = [0]
         self.list_style = []
         self.sectionlevel = 0
         #self.table = None
 
     def add_text(self, text):
         dprint()
-        self.states[-1].append((-1, text))
+        self.states[-1].append(text)
 
-    def new_state(self, indent=2):
+    def new_state(self):
         dprint()
         self.ensure_state()
         self.states.append([])
-        self.stateindent.append(indent)
 
     def ensure_state(self):
         if self.states and self.states[-1]:
             content = self.states[-1]
             self.states[-1] = []
-            result = []
-            for itemindent, item in content:
-                result.append(item)
+            result = content[:]
             self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
 
     def end_state(self, wrap=False, end=[''], first=None):
         dprint()
         content = self.states.pop()
-        maxindent = sum(self.stateindent)
-        indent = self.stateindent.pop()
-        result = []
-        toformat = []
-        def do_format():
-            if not toformat:
-                return
-            res = ''.join(toformat).splitlines()
-            if end:
-                res += end
-            result.append((indent, res))
-        for itemindent, item in content:
-            if itemindent == -1:
-                toformat.append(item)
-            else:
-                do_format()
-                result.append((indent + itemindent, item))
-                toformat = []
-        do_format()
+        result = content[:]
         if first is not None and result:
-            itemindent, item = result[0]
+            item = result[0]
             if item:
-                result.insert(0, (itemindent - indent, [first + item[0]]))
-                result[1] = (itemindent, item[1:])
+                result.insert(0, [first + item[0]])
+                result[1] = item[1:]
         self.states[-1].extend(result)
 
     def visit_start_of_file(self, node):
         dprint()
-        self.new_state(0)
+        self.new_state()
 
         # FIXME: visit_start_of_file not close previous section.
         # sectionlevel keep previous and new file's heading level start with
@@ -159,7 +137,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_document(self, node):
         dprint()
-        self.new_state(0)
+        self.new_state()
 
     def depart_document(self, node):
         dprint()
@@ -181,7 +159,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_topic(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_topic(self, node):
         dprint()
@@ -194,7 +172,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_rubric(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
         #self.add_text('-[ ')
 
     def depart_rubric(self, node):
@@ -224,12 +202,11 @@ class DocxTranslator(nodes.NodeVisitor):
         #if isinstance(node.parent, nodes.Admonition):
         #    self.add_text(node.astext()+': ')
         #    raise nodes.SkipNode
-        self.new_state(0)
+        self.new_state()
 
     def depart_title(self, node):
         dprint()
-        text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
-        self.stateindent.pop()
+        text = ''.join(self.states.pop())
         dprint(_func='* heading', text=repr(text), level=self.sectionlevel)
         self.docbody.append(docx.heading(text, self.sectionlevel))
 
@@ -261,7 +238,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_desc_signature(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
         #if node.parent['objtype'] in ('class', 'exception'):
         #    self.add_text('%s ' % node.parent['objtype'])
 
@@ -410,7 +387,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         raise nodes.SkipNode
         #self._footnote = node.children[0].astext().strip()
-        #self.new_state(len(self._footnote) + 3)
+        #self.new_state()
 
     def depart_footnote(self, node):
         dprint()
@@ -424,7 +401,7 @@ class DocxTranslator(nodes.NodeVisitor):
         #    self._citlabel = node[0].astext()
         #else:
         #    self._citlabel = ''
-        #self.new_state(len(self._citlabel) + 3)
+        #self.new_state()
 
     def depart_citation(self, node):
         dprint()
@@ -448,7 +425,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_option_list_item(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_option_list_item(self, node):
         dprint()
@@ -551,13 +528,12 @@ class DocxTranslator(nodes.NodeVisitor):
         #if node.has_key('morerows') or node.has_key('morecols'):
         #    raise NotImplementedError('Column or row spanning cells are '
         #                              'not implemented.')
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_entry(self, node):
         dprint()
         raise nodes.SkipNode
         #text = '\n'.join('\n'.join(x[1]) for x in self.states.pop())
-        #self.stateindent.pop()
         #self.table[-1].append(text)
 
     def visit_table(self, node):
@@ -565,7 +541,7 @@ class DocxTranslator(nodes.NodeVisitor):
         raise nodes.SkipNode
         #if self.table:
         #    raise NotImplementedError('Nested tables are not supported.')
-        #self.new_state(0)
+        #self.new_state()
         #self.table = [[]]
 
     def depart_table(self, node):
@@ -624,7 +600,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_acks(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
         #self.add_text(', '.join(n.astext() for n in node.children[0].children)
         #              + '.')
         #self.end_state()
@@ -638,9 +614,8 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_transition(self, node):
         dprint()
         raise nodes.SkipNode
-        #indent = sum(self.stateindent)
-        #self.new_state(0)
-        #self.add_text('=' * (MAXWIDTH - indent))
+        #self.new_state()
+        #self.add_text('=' * 70)
         #self.end_state()
 
     def visit_bullet_list(self, node):
@@ -675,8 +650,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def depart_list_item(self, node):
         dprint()
-        text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
-        self.stateindent.pop()
+        text = ''.join(self.states.pop())
         self.docbody.append(docx.paragraph(text, self.list_style[-1], breakbefore=True))
 
     def visit_definition_list_item(self, node):
@@ -692,7 +666,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_term(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_term(self, node):
         dprint()
@@ -739,7 +713,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_field_name(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_field_name(self, node):
         dprint()
@@ -784,7 +758,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_admonition(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_admonition(self, node):
         dprint()
@@ -794,7 +768,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def _visit_admonition(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(2)
+        #self.new_state()
 
     def _make_depart_admonition(name):
         def depart_admonition(self, node):
@@ -825,7 +799,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_versionmodified(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
         #if node.children:
         #    self.add_text(versionlabels[node['type']] % node['version'] + ': ')
         #else:
@@ -849,7 +823,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_doctest_block(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_doctest_block(self, node):
         dprint()
@@ -859,7 +833,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_line_block(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
 
     def depart_line_block(self, node):
         dprint()
@@ -896,7 +870,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
-        #    self.new_state(0)
+        #    self.new_state()
 
     def depart_paragraph(self, node):
         dprint()
@@ -1054,7 +1028,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_system_message(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.new_state(0)
+        #self.new_state()
         #self.add_text('<SYSTEM MESSAGE: %s>' % node.astext())
         #self.end_state()
 
