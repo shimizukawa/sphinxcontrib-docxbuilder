@@ -1,0 +1,15 @@
+Todos
+======
+
+Functionals
+------------
+* code highlighting
+
+Environments
+-------------
+* docx builder need python-docx package, but not distributed at PyPI.
+
+Known Issues
+-------------
+Not yet.
+
