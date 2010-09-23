@@ -27,11 +27,11 @@ The docx module has the following features:
 
 Tables are just lists of lists, like this:
 
--- -- --
+== == ==
 A1 A2 A3
 B1 B2 B3
 C1 C2 C3
--- -- --
+== == ==
 
 Editing documents
 ==================

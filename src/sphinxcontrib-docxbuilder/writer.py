@@ -89,7 +89,7 @@ class DocxTranslator(nodes.NodeVisitor):
         self.states = [[]]
         self.list_style = []
         self.sectionlevel = 0
-        #self.table = None
+        self.table = None
 
     def add_text(self, text):
         dprint()
@@ -102,15 +102,13 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def ensure_state(self):
         if self.states and self.states[-1]:
-            content = self.states[-1]
+            result = self.states[-1]
             self.states[-1] = []
-            result = content[:]
             self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
 
     def end_state(self, wrap=False, end=[''], first=None):
         dprint()
-        content = self.states.pop()
-        result = content[:]
+        result = self.states.pop()
         if first is not None and result:
             item = result[0]
             if item:
@@ -485,8 +483,10 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_colspec(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.table[0].append(node['colwidth'])
+        self.table[0].append(node['colwidth'])
+
+    def depart_colspec(self, node):
+        dprint()
 
     def visit_tgroup(self, node):
         dprint()
@@ -506,8 +506,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_tbody(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.table.append('sep')
+        self.table.append('sep')
 
     def depart_tbody(self, node):
         dprint()
@@ -515,8 +514,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_row(self, node):
         dprint()
-        raise nodes.SkipNode
-        #self.table.append([])
+        self.table.append([])
 
     def depart_row(self, node):
         dprint()
@@ -524,49 +522,48 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_entry(self, node):
         dprint()
-        raise nodes.SkipNode
-        #if node.has_key('morerows') or node.has_key('morecols'):
-        #    raise NotImplementedError('Column or row spanning cells are '
-        #                              'not implemented.')
-        #self.new_state()
+        if node.has_key('morerows') or node.has_key('morecols'):
+            raise NotImplementedError('Column or row spanning cells are '
+                                      'not implemented.')
+        self.new_state()
 
     def depart_entry(self, node):
         dprint()
-        raise nodes.SkipNode
-        #text = '\n'.join('\n'.join(x[1]) for x in self.states.pop())
-        #self.table[-1].append(text)
+        text = '\n'.join('\n'.join(x) for x in self.states.pop())
+        self.table[-1].append(text)
 
     def visit_table(self, node):
         dprint()
-        raise nodes.SkipNode
-        #if self.table:
-        #    raise NotImplementedError('Nested tables are not supported.')
-        #self.new_state()
-        #self.table = [[]]
+        if self.table:
+            raise NotImplementedError('Nested tables are not supported.')
+        self.new_state()
+        self.table = [[]]
 
     def depart_table(self, node):
         dprint()
-        raise nodes.SkipNode
-        #lines = self.table[1:]
-        #fmted_rows = []
+        lines = self.table[1:]
+        fmted_rows = []
         #colwidths = self.table[0]
         #realwidths = colwidths[:]
         #separator = 0
-        ## don't allow paragraphs in table cells for now
-        #for line in lines:
-        #    if line == 'sep':
-        #        separator = len(fmted_rows)
-        #    else:
-        #        cells = []
-        #        for i, cell in enumerate(line):
-        #            par = textwrap.wrap(cell, width=colwidths[i])
-        #            if par:
-        #                maxwidth = max(map(len, par))
-        #            else:
-        #                maxwidth = 0
-        #            realwidths[i] = max(realwidths[i], maxwidth)
-        #            cells.append(par)
-        #        fmted_rows.append(cells)
+        # don't allow paragraphs in table cells for now
+        for line in lines:
+            if line == 'sep':
+                pass
+                #separator = len(fmted_rows)
+            else:
+                fmted_rows.append(line)
+
+                #cells = []
+                #for i, cell in enumerate(line):
+                #    par = textwrap.wrap(cell, width=colwidths[i])
+                #    if par:
+                #        maxwidth = max(map(len, par))
+                #    else:
+                #        maxwidth = 0
+                #    realwidths[i] = max(realwidths[i], maxwidth)
+                #    cells.append(par)
+                #fmted_rows.append(cells)
 
         #def writesep(char='-'):
         #    out = ['+']
@@ -594,8 +591,11 @@ class DocxTranslator(nodes.NodeVisitor):
         #        writesep('-')
         #    writerow(row)
         #writesep('-')
-        #self.table = None
-        #self.end_state(wrap=False)
+
+        self.docbody.append(docx.table(fmted_rows))
+
+        self.table = None
+        self.end_state(wrap=False)
 
     def visit_acks(self, node):
         dprint()
