@@ -70,7 +70,6 @@ class DocxWriter(writers.Writer):
 
 
 class DocxTranslator(nodes.NodeVisitor):
-    sectionchars = '*=-~"+`'
 
     def __init__(self, document, builder, docbody):
         self.builder = builder
@@ -89,6 +88,13 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def new_state(self, indent=2):
         dprint()
+        if self.states and self.states[-1]:
+            content = self.states[-1]
+            self.states[-1] = []
+            result = []
+            for itemindent, item in content:
+                result.append(item)
+            self.docbody.append(docx.paragraph(''.join(result)))
         self.states.append([])
         self.stateindent.append(indent)
 
@@ -132,10 +138,6 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_document(self, node):
         dprint()
         self.end_state()
-        #self.body = '\n'.join(line and (' '*indent + line)
-        #                      for indent, lines in self.states[0]
-        #                      for line in lines)
-        ## XXX header/footer?
 
     def visit_highlightlang(self, node):
         dprint()
@@ -946,7 +948,6 @@ class DocxTranslator(nodes.NodeVisitor):
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
         #    self.new_state(0)
-        #self.docbody.append(docx.paragraph(node.astext()))
 
     def depart_paragraph(self, node):
         dprint()
