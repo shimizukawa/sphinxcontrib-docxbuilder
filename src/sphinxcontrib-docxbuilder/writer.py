@@ -574,10 +574,10 @@ class DocxTranslator(nodes.NodeVisitor):
     def visit_image(self, node):
         dprint()
         uri = node.attributes['uri']
-        srcdir = self.builder.env.srcdir
+        file_path = os.path.join(self.builder.env.srcdir, uri)
         dc = self.docx_container
         dc.relationships, picpara = docx.picture(
-                dc.relationships, uri, '', srcdir=srcdir)
+                dc.relationships, file_path, '')
         self.docbody.append(picpara)
 
     def depart_image(self, node):
