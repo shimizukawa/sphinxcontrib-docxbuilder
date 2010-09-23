@@ -47,5 +47,6 @@ setup(
      ),
      test_suite='nose.collector',
      tests_require=['Nose','minimock','pep8'],
+     zip_safe=False,
 )
 
