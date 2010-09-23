@@ -42,11 +42,7 @@ class DocxBuilder(Builder):
         outfilename = path.join(self.outdir, os_path(docname) + self.out_suffix)
         ensuredir(path.dirname(outfilename))
         try:
-            f = codecs.open(outfilename, 'w', 'utf-8')
-            try:
-                f.write(self.writer.output)
-            finally:
-                f.close()
+            self.writer.save(outfilename)
         except (IOError, OSError), err:
             self.warn("error writing file %s: %s" % (outfilename, err))
 
