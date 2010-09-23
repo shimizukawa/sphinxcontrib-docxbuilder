@@ -105,7 +105,7 @@ class DocxTranslator(nodes.NodeVisitor):
             self.states[-1] = []
             self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
 
-    def end_state(self, end=[''], first=None):
+    def end_state(self, first=None):
         dprint()
         result = self.states.pop()
         if first is not None and result:
@@ -243,7 +243,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         raise nodes.SkipNode
         ## XXX: wrap signatures in a way that makes sense
-        #self.end_state(end=None)
+        #self.end_state()
 
     def visit_desc_name(self, node):
         dprint()
@@ -629,7 +629,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         raise nodes.SkipNode
         #if not self._li_has_classifier:
-        #    self.end_state(end=None)
+        #    self.end_state()
 
     def visit_classifier(self, node):
         dprint()
@@ -639,7 +639,7 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_classifier(self, node):
         dprint()
         raise nodes.SkipNode
-        #self.end_state(end=None)
+        #self.end_state()
 
     def visit_definition(self, node):
         dprint()
@@ -676,7 +676,7 @@ class DocxTranslator(nodes.NodeVisitor):
         dprint()
         raise nodes.SkipNode
         #self.add_text(':')
-        #self.end_state(end=None)
+        #self.end_state()
 
     def visit_field_body(self, node):
         dprint()
