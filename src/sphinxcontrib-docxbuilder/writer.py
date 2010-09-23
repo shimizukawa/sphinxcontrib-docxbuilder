@@ -79,7 +79,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
         self.states = [[]]
         self.stateindent = [0]
-        #self.list_counter = []
+        self.list_style = []
         self.sectionlevel = 0
         #self.table = None
 
@@ -658,58 +658,60 @@ class DocxTranslator(nodes.NodeVisitor):
         raise nodes.SkipNode
 
     def visit_bullet_list(self, node):
-        pass
         dprint()
-        #self.list_counter.append(-1)
+        self.list_style.append('ListBullet')
 
     def depart_bullet_list(self, node):
-        pass
         dprint()
-        #self.list_counter.pop()
+        self.list_style.pop()
 
     def visit_enumerated_list(self, node):
-        pass
         dprint()
-        #self.list_counter.append(0)
+        self.list_style.append('ListNumber')
 
     def depart_enumerated_list(self, node):
         pass
         dprint()
-        #self.list_counter.pop()
+        self.list_style.pop()
 
     def visit_definition_list(self, node):
         pass
         dprint()
-        #self.list_counter.append(-2)
+        #self.list_style.append(-2)
 
     def depart_definition_list(self, node):
         pass
         dprint()
-        #self.list_counter.pop()
+        #self.list_style.pop()
 
     def visit_list_item(self, node):
-        pass
         dprint()
-        #if self.list_counter[-1] == -1:
+        self.new_state()
+
+        #if self.list_style[-1] == -1:
         #    # bullet list
         #    self.new_state(2)
-        #elif self.list_counter[-1] == -2:
+        #elif self.list_style[-1] == -2:
         #    # definition list
         #    pass
         #else:
         #    # enumerated list
-        #    self.list_counter[-1] += 1
-        #    self.new_state(len(str(self.list_counter[-1])) + 2)
+        #    self.list_style[-1] += 1
+        #    self.new_state(len(str(self.list_style[-1])) + 2)
 
     def depart_list_item(self, node):
-        pass
         dprint()
-        #if self.list_counter[-1] == -1:
+
+        text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
+        self.stateindent.pop()
+        self.docbody.append(docx.paragraph(text, self.list_style[-1]))
+
+        #if self.list_style[-1] == -1:
         #    self.end_state(first='* ', end=None)
-        #elif self.list_counter[-1] == -2:
+        #elif self.list_style[-1] == -2:
         #    pass
         #else:
-        #    self.end_state(first='%s. ' % self.list_counter[-1], end=None)
+        #    self.end_state(first='%s. ' % self.list_style[-1], end=None)
 
     def visit_definition_list_item(self, node):
         pass
@@ -944,7 +946,7 @@ class DocxTranslator(nodes.NodeVisitor):
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
         #    self.new_state(0)
-        self.docbody.append(docx.paragraph(node.astext()))
+        #self.docbody.append(docx.paragraph(node.astext()))
 
     def depart_paragraph(self, node):
         dprint()
