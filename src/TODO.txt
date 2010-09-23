@@ -3,7 +3,14 @@ Todos
 
 Functionals
 ------------
-* code highlighting
+* singlefile output (currently can output file per file output only)
+* table output
+* implement many many directives
+    * image and figure
+    * note
+    * warning
+    * code highlighting
+    * and etc....
 
 Environments
 -------------

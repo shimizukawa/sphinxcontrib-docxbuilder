@@ -8,20 +8,27 @@ Features
 Setup
 =====
 
-by easy_install
-----------------
+by buildout
+------------
 Make environment::
 
-   $ easy_install sphinxcontrib-docxbuilder
+    $ python bootstrap.py -d init
+    $ bin/buildout
 
 Usage
 =====
 
 Execute sphinx-build with below option::
 
-   $ sphinx-build -b docx [input-dir] [output-dir]
-   $ ls [output-dir]
-   output.docx
+    $ bin/sphinx-build -b docx [input-dir] [output-dir]
+    $ ls [output-dir]
+    output.docx
+
+for example building, simply run below::
+
+    $ bin/example
+    ...
+    Saved new file to: examples/index.docx
 
 
 Requirements
