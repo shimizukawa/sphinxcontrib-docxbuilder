@@ -838,6 +838,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_paragraph(self, node):
         dprint()
+        self.ensure_state()
         #if not isinstance(node.parent, nodes.Admonition) or \
         #       isinstance(node.parent, addnodes.seealso):
         #    self.new_state()

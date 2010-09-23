@@ -22,7 +22,6 @@ Environments
 
 Known Issues
 -------------
-* bounding paragraphs generate single line (no line-break).
 * some indented block output are not working correctly yet.
     * block-quote
     * literal-block
