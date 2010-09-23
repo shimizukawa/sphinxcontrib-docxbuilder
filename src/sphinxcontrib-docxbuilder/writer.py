@@ -80,7 +80,7 @@ class DocxTranslator(nodes.NodeVisitor):
         self.states = [[]]
         self.stateindent = [0]
         #self.list_counter = []
-        self.sectionlevel = 1
+        self.sectionlevel = 0
         #self.table = None
 
     def add_text(self, text):
