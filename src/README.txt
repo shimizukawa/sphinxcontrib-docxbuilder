@@ -1,9 +1,9 @@
-Sphinx docx builder extension.
+Sphinx docx builder extension generate single docx file from Sphinx document
+source.
 
 Features
 ========
 
-* Generate single docx file from Sphinx document source.
 * This extension work on Multi-platform (not need OpenOffice or MS Word).
 * Usable sphinx syntax and directives:
     * heading line output
@@ -26,7 +26,7 @@ Make environment by buildout
 -----------------------------
 
 'hg clone' or download sphinxcontrib-docxbuilder archive from 'get source'
-menu at http://bitbucket.org/shimizukawa/sphinxcontrib-docxbuilder .
+menu at http://bitbucket.org/shimizukawa/sphinxcontrib-docxbuilder ::
 
     $ cd /path/to/sphinxcontrib-docxbuilder
     $ python bootstrap.py -d init
