@@ -1,5 +1,6 @@
 Sphinx docx builder extension generate single docx file from Sphinx document
-source.
+source. This extension use python-docx module (included) for the docx file
+generation.
 
 Features
 ========
@@ -62,7 +63,8 @@ Requirements
 ============
 
 * Python 2.6 or later (not support 3.x)
-* python-docx (not released, but included)
+* `python-docx <http://github.com/mikemaccana/python-docx>`_
+  (not released, but included), Thanks Mike MacCana.
 * setuptools or distriubte.
 
 History
