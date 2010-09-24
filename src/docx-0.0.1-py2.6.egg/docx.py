@@ -17,17 +17,22 @@ from os.path import join
 
 # Record template directory's location which is just 'template' for a docx
 # developer or 'site-packages/docx-template' if you have installed docx
-template_dir = join(os.path.dirname(__file__),'docx-template') # installed
-if not os.path.isdir(template_dir):
-    template_dir = join(os.path.dirname(__file__),'template') # dev
+TEMPLATE_DIR = join(os.path.dirname(__file__),'docx-template') # installed
+if not os.path.isdir(TEMPLATE_DIR):
+    TEMPLATE_DIR = join(os.path.dirname(__file__),'template') # dev
 
 # FIXME: QUICK-HACK to prevent picture() from staining template directory.
 # temporary directory will create per module import.
+template_dir = TEMPLATE_DIR
+def set_template(template_path):
+    global template_dir
+    template_dir = template_path
+
 import tempfile
-tmpl_dir = tempfile.mkdtemp(prefix='docx-')
-os.rmdir(tmpl_dir)
-shutil.copytree(template_dir, tmpl_dir)
-template_dir = tmpl_dir  # override template_dir
+temp_dir = tempfile.mkdtemp(prefix='docx-')
+os.rmdir(temp_dir)
+shutil.copytree(TEMPLATE_DIR, temp_dir)
+set_template(temp_dir)
 # END of QUICK-HACK
 
 # All Word prefixes / namespace matches used in document.xml & core.xml.
