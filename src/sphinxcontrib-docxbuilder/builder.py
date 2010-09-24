@@ -5,7 +5,8 @@
 
     OpenXML Document Sphinx builder.
 
-    :copyright: Copyright 2010 by shimizukawa at gmail dot com (Sphinx-users.jp).
+    :copyright:
+        Copyright 2010 by shimizukawa at gmail dot com (Sphinx-users.jp).
     :license: BSD, see LICENSE for details.
 """
 
@@ -46,7 +47,7 @@ class DocxBuilder(Builder):
             hashindex = refuri.find('#')
             if hashindex < 0:
                 continue
-            hashindex = refuri.find('#', hashindex+1)
+            hashindex = refuri.find('#', hashindex + 1)
             if hashindex >= 0:
                 refnode['refuri'] = fname + refuri[hashindex:]
 
@@ -80,7 +81,8 @@ class DocxBuilder(Builder):
     def write_doc(self, docname, doctree):
         destination = StringOutput(encoding='utf-8')
         self.writer.write(doctree, destination)
-        outfilename = path.join(self.outdir, os_path(docname) + self.out_suffix)
+        outfilename = path.join(
+                self.outdir, os_path(docname) + self.out_suffix)
         ensuredir(path.dirname(outfilename))
         try:
             self.writer.save(outfilename)

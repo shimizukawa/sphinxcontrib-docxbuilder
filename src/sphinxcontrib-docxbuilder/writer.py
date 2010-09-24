@@ -5,7 +5,8 @@
 
     Custom docutils writer for OpenXML (docx).
 
-    :copyright: Copyright 2010 by shimizukawa at gmail dot com (Sphinx-users.jp).
+    :copyright:
+        Copyright 2010 by shimizukawa at gmail dot com (Sphinx-users.jp).
     :license: BSD, see LICENSE for details.
 """
 
@@ -29,10 +30,10 @@ logger = logging.getLogger('docx')
 def dprint(_func=None, **kw):
     f = sys._getframe(1)
     if kw:
-        text = ', '.join('%s = %s' % (k,v) for k,v in kw.items())
+        text = ', '.join('%s = %s' % (k, v) for k, v in kw.items())
     else:
         try:
-            text = dict((k,repr(v)) for k,v in f.f_locals.items()
+            text = dict((k, repr(v)) for k, v in f.f_locals.items()
                         if k != 'self')
             text = unicode(text)
         except:
@@ -75,15 +76,16 @@ class DocxWriter(writers.Writer):
                 title='Python docx demo',
                 subject='A practical example of making docx from Python',
                 creator='Mike MacCana',
-                keywords=['python','Office Open XML','Word'])
+                keywords=['python', 'Office Open XML', 'Word'])
 
         docx.savedocx(dc.document, coreprops, dc.appprops, dc.contenttypes,
                 dc.websettings, wordrelationships, filename)
 
     def translate(self):
-        visitor = DocxTranslator(self.document, self.builder, self.docx_container)
+        visitor = DocxTranslator(
+                self.document, self.builder, self.docx_container)
         self.document.walkabout(visitor)
-        self.output = '' #visitor.body
+        self.output = ''  # visitor.body
 
 
 class DocxTranslator(nodes.NodeVisitor):
@@ -112,7 +114,8 @@ class DocxTranslator(nodes.NodeVisitor):
         if self.states and self.states[-1]:
             result = self.states[-1]
             self.states[-1] = []
-            self.docbody.append(docx.paragraph(''.join(result), breakbefore=True))
+            self.docbody.append(
+                    docx.paragraph(''.join(result), breakbefore=True))
 
     def end_state(self, first=None):
         dprint()
@@ -160,7 +163,8 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_section(self, node):
         dprint()
         self.ensure_state()
-        self.sectionlevel = 0 if self.sectionlevel == 0 else self.sectionlevel - 1
+        if self.sectionlevel > 0:
+            self.sectionlevel -= 1
 
     def visit_topic(self, node):
         dprint()
@@ -529,7 +533,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_entry(self, node):
         dprint()
-        if node.has_key('morerows') or node.has_key('morecols'):
+        if 'morerows' in node or 'morecols' in node:
             raise NotImplementedError('Column or row spanning cells are '
                                       'not implemented.')
         self.new_state()
@@ -623,7 +627,8 @@ class DocxTranslator(nodes.NodeVisitor):
     def depart_list_item(self, node):
         dprint()
         text = ''.join(self.states.pop())
-        self.docbody.append(docx.paragraph(text, self.list_style[-1], breakbefore=True))
+        self.docbody.append(
+                docx.paragraph(text, self.list_style[-1], breakbefore=True))
 
     def visit_definition_list_item(self, node):
         dprint()
@@ -773,9 +778,11 @@ class DocxTranslator(nodes.NodeVisitor):
         raise nodes.SkipNode
         #self.new_state()
         #if node.children:
-        #    self.add_text(versionlabels[node['type']] % node['version'] + ': ')
+        #    self.add_text(
+        #            versionlabels[node['type']] % node['version'] + ': ')
         #else:
-        #    self.add_text(versionlabels[node['type']] % node['version'] + '.')
+        #    self.add_text(
+        #            versionlabels[node['type']] % node['version'] + '.')
 
     def depart_versionmodified(self, node):
         dprint()
