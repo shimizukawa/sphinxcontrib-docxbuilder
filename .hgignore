@@ -1,6 +1,7 @@
 .installed.cfg
 .pyc
 .swp
+.log
 _build
 bin
 develop-eggs
@@ -9,4 +10,5 @@ eggs
 parts
 examples/.doctrees
 examples/.*.docx
+examples\d+
 src/.*.egg-info
