@@ -19,6 +19,9 @@ Environments
 -------------
 * docx builder need python-docx package, but not distributed at PyPI.
 * python-docx can't generate <w:i> (italic) and <w:b> (bold) mode tag.
+* python-docx using template's media(image) folder for temporarily, then some
+  independent document's media files are shared unexpectly.
+  Included python-docx package was patched by QUICK-HACK.
 
 Known Issues
 -------------
@@ -26,6 +29,4 @@ Known Issues
     * block-quote
     * literal-block
 * figure directive's caption become normal paragraph (not bundled with image).
-* python-docx using template's media(image) folder for temporarily, then some
-  independent document's media files are shared unexpectly.
 * image directive break docx format (maybe very large file are included)

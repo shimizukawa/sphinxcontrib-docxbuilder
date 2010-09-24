@@ -21,6 +21,15 @@ template_dir = join(os.path.dirname(__file__),'docx-template') # installed
 if not os.path.isdir(template_dir):
     template_dir = join(os.path.dirname(__file__),'template') # dev
 
+# FIXME: QUICK-HACK to prevent picture() from staining template directory.
+# temporary directory will create per module import.
+import tempfile
+tmpl_dir = tempfile.mkdtemp(prefix='docx-')
+os.rmdir(tmpl_dir)
+shutil.copytree(template_dir, tmpl_dir)
+template_dir = tmpl_dir  # override template_dir
+# END of QUICK-HACK
+
 # All Word prefixes / namespace matches used in document.xml & core.xml.
 # LXML doesn't actually use prefixes (just the real namespace) , but these
 # make it easier to copy Word output more easily. 
