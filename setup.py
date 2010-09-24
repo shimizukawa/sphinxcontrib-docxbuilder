@@ -35,8 +35,11 @@ setup(
      package_data = {'': ['buildout.cfg']},
      include_package_data=True,
      install_requires=[
-        'docx',
-         # -*- Extra requirements: -*-
+        'Sphinx',
+        'docx',  # docx included this package
+        # -*- Extra requirements: -*-
+        'lxml',  # required by docx
+        'PIL',  # required by docx
      ],
      extras_require=dict(
          test=[
