@@ -3,7 +3,6 @@ Todos
 
 Functionals
 ------------
-* table output
 * toctree generation (dispose toctree output? create by docx function?)
 * reset number for non-continuous numbered list
 * add page-break directive
