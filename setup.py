@@ -29,7 +29,7 @@ setup(
      author='Takayuki SHIMIZUKAWA',
      author_email='shimizukawa at gmail dot com',
      url='http://bitbucket.org/shimizukawa/sphinxcontrib-docxbuilder',
-     license='BSD',
+     license='MIT',
      packages=find_packages('src'),
      package_dir={'': 'src'},
      package_data = {'': ['buildout.cfg']},
