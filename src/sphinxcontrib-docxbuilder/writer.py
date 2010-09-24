@@ -20,6 +20,8 @@ from sphinx.locale import admonitionlabels, versionlabels, _
 import docx
 import sys
 import os
+import zipfile
+import tempfile
 
 import logging
 logging.basicConfig(filename='docx.log', filemode='w', level=logging.INFO,
@@ -68,6 +70,17 @@ class DocxWriter(writers.Writer):
         dc.contenttypes = docx.contenttypes()
         dc.websettings = docx.websettings()
         self.docx_container = dc
+
+        self.template_setup()
+
+    def template_setup(self):
+        dotx = self.builder.config['docx_template']
+        if dotx:
+            dotx = os.path.join(self.builder.env.srcdir, dotx)
+            z = zipfile.ZipFile(dotx, 'r')
+            template_dir = tempfile.mkdtemp(prefix='docx-')
+            z.extractall(template_dir)
+            docx.set_template(template_dir)
 
     def save(self, filename):
         dc = self.docx_container

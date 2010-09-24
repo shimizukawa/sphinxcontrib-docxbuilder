@@ -52,6 +52,11 @@ conf.py::
 
     extensions = ['sphinxcontrib-docxbuilder']
 
+If you want to use 'dotx' template, put 'template.dotx' file into source
+directory and write below spec in conf.py::
+
+    docx_template = 'template.dotx'
+
 Execute sphinx-build with below option::
 
     $ bin/sphinx-build -b docx [input-dir] [output-dir]
