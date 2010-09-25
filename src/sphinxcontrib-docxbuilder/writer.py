@@ -609,7 +609,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_bullet_list(self, node):
         dprint()
-        self.list_style.append('ListBullet')
+        self.list_style.append('List Bullet')
 
     def depart_bullet_list(self, node):
         dprint()
@@ -617,7 +617,7 @@ class DocxTranslator(nodes.NodeVisitor):
 
     def visit_enumerated_list(self, node):
         dprint()
-        self.list_style.append('ListNumber')
+        self.list_style.append('List Number')
 
     def depart_enumerated_list(self, node):
         dprint()

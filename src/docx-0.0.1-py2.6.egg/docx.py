@@ -67,6 +67,56 @@ nsprefixes = {
     'pr':'http://schemas.openxmlformats.org/package/2006/relationships'
     }
 
+
+# QUICK-HACK: style name mapping
+# ex. Name 'Heading1' (w:styleId='') is not static name. 'heading 1'
+# (<w:name w:val=''>) is static name.
+stylenames = {
+    'Normal': 'Normal',
+    'heading 1': 'Heading1',
+    'heading 2': 'Heading2',
+    'heading 3': 'Heading3',
+    'heading 4': 'Heading4',
+    'heading 5': 'Heading5',
+    'heading 6': 'Heading6',
+    'heading 7': 'Heading7',
+    'heading 8': 'Heading8',
+    'heading 9': 'Heading9',
+    'Default Paragraph Font': 'DefaultParagraphFont',
+    'Normal Table': 'TableNormal',
+    'No List': 'NoList',
+    'toc 1': 'Normal',
+    'toc 2': 'Normal',
+    'toc 3': 'Normal',
+    'TOC Heading': 'Normal',
+    'Hyperlink': 'Normal',
+    'Title': 'Normal',
+    'Subtitle': 'Normal',
+    'header': 'Normal',
+    'footer': 'Normal',
+    'page number': 'Normal',
+    'Strong': 'Normal',
+    'Emphasis': 'Normal',
+    'No Spacing': 'Normal',
+    'List Paragraph': 'Normal',
+    'Quote': 'Normal',
+    'Intense Quote': 'Normal',
+    'Subtle Emphasis': 'Normal',
+    'Intense Emphasis': 'Normal',
+    'Subtle Reference': 'Normal',
+    'Intense Reference': 'Normal',
+    'Book Title': 'Normal',
+    'caption': 'Normal',
+    'Colorful Grid Accent 1': 'ColorfulGrid-Accent1',
+    'Heading 1 Char': 'Heading1Char',
+    'Heading 2 Char': 'Heading2Char',
+    'List Bullet': 'ListBullet',
+    'List Number': 'ListNumber',
+    'Body Text': 'BodyText',
+    'Body Text Char': 'BodyTextChar',
+}
+
+
 def opendocx(file):
     '''Open a docx file, return a document XML tree'''
     mydoc = zipfile.ZipFile(file)
@@ -139,7 +189,7 @@ def pagebreak(type='page', orient='portrait'):
         pagebreak.append(pPr)
     return pagebreak    
 
-def paragraph(paratext,style='BodyText',breakbefore=False):
+def paragraph(paratext,style='Body Text',breakbefore=False):
     '''Make a new paragraph element, containing a run, and some text. 
     Return the paragraph element.'''
     # Make our elements
@@ -153,6 +203,7 @@ def paragraph(paratext,style='BodyText',breakbefore=False):
         run.append(lastRenderedPageBreak)    
     text = makeelement('t',tagtext=paratext)
     pPr = makeelement('pPr')
+    style = stylenames.get(style, 'Body Text')
     pStyle = makeelement('pStyle',attributes={'val':style})
     pPr.append(pStyle)
                 
@@ -191,7 +242,8 @@ def heading(headingtext,headinglevel):
     # Make our elements
     paragraph = makeelement('p')
     pr = makeelement('pPr')
-    pStyle = makeelement('pStyle',attributes={'val':'Heading'+str(headinglevel)})    
+    style = stylenames.get('heading ' + str(headinglevel), 'Normal')
+    pStyle = makeelement('pStyle',attributes={'val': style})
     run = makeelement('r')
     text = makeelement('t',tagtext=headingtext)
     # Add the text the run, and the run to the paragraph
