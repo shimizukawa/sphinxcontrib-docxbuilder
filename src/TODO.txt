@@ -28,4 +28,3 @@ Known Issues
     * literal-block
 * figure directive's caption become normal paragraph (not bundled with image).
 * image directive break docx format (maybe very large file are included)
-* dotx template can't work correctly.

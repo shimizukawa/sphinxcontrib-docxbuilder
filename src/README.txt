@@ -52,7 +52,8 @@ conf.py::
 
     extensions = ['sphinxcontrib-docxbuilder']
 
-If you want to use 'dotx' template, put 'template.dotx' file into source
+If you want to use 'dotx' template, put 'template.dotx' file (that dotx's style
+names are need to modifiy with `python-docx style name spec`_ ) into source
 directory and write below spec in conf.py::
 
     docx_template = 'template.dotx'
@@ -62,6 +63,37 @@ Execute sphinx-build with below option::
     $ bin/sphinx-build -b docx [input-dir] [output-dir]
     $ ls [output-dir]
     output.docx
+
+
+python-docx style name spec
+============================
+
+`dotx` is a template file was created with Word 2007 or later.
+You can use `dotx`, but that need static-named style names.
+`Style Name` such as 'Heading1' is constructed across python-docx module
+by a use to specify the displaying of document data.
+You must set style names by below names on Word 2007::
+
+* Normal
+* Heading1
+* Heading2
+* Heading3
+* Heading4
+* Heading5
+* ListBullet
+* ListNumber
+* TableNormal
+
+.. below names are not implemented by need at future.
+.. * Title
+.. * SubTitle
+.. * NoList
+.. * Strong
+.. * Emphasis
+.. * NoSpacing
+.. * BlockQuote
+.. * LiteralBlock
+.. * BookTitle
 
 
 Requirements
