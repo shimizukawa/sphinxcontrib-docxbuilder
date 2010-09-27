@@ -10,7 +10,7 @@ indented block:
 
 literal-block (code-block is sphinx directive):
 
-.. code-block:: Python
+.. code-block:: python
 
     import this
     import os
