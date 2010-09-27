@@ -27,13 +27,10 @@ template_dir = TEMPLATE_DIR
 def set_template(template_path):
     global template_dir
     template_dir = template_path
+    update_stylenames(join(template_dir, 'word', 'styles.xml'))
 
-import tempfile
-temp_dir = tempfile.mkdtemp(prefix='docx-')
-os.rmdir(temp_dir)
-shutil.copytree(TEMPLATE_DIR, temp_dir)
-set_template(temp_dir)
 # END of QUICK-HACK
+
 
 # All Word prefixes / namespace matches used in document.xml & core.xml.
 # LXML doesn't actually use prefixes (just the real namespace) , but these
@@ -69,52 +66,57 @@ nsprefixes = {
 
 
 # QUICK-HACK: style name mapping
-# ex. Name 'Heading1' (w:styleId='') is not static name. 'heading 1'
-# (<w:name w:val=''>) is static name.
+# ex. Name of <... w:styleId='heading'> is not static name.
+# Use <w:aliases w:val='Heading'> or <w:name w:val='Heading'>) static name.
 stylenames = {
     'Normal': 'Normal',
-    'heading 1': 'Heading1',
-    'heading 2': 'Heading2',
-    'heading 3': 'Heading3',
-    'heading 4': 'Heading4',
-    'heading 5': 'Heading5',
-    'heading 6': 'Heading6',
-    'heading 7': 'Heading7',
-    'heading 8': 'Heading8',
-    'heading 9': 'Heading9',
-    'Default Paragraph Font': 'DefaultParagraphFont',
-    'Normal Table': 'TableNormal',
-    'No List': 'NoList',
-    'toc 1': 'Normal',
-    'toc 2': 'Normal',
-    'toc 3': 'Normal',
-    'TOC Heading': 'Normal',
-    'Hyperlink': 'Normal',
-    'Title': 'Normal',
-    'Subtitle': 'Normal',
-    'header': 'Normal',
-    'footer': 'Normal',
-    'page number': 'Normal',
-    'Strong': 'Normal',
-    'Emphasis': 'Normal',
-    'No Spacing': 'Normal',
-    'List Paragraph': 'Normal',
-    'Quote': 'Normal',
-    'Intense Quote': 'Normal',
-    'Subtle Emphasis': 'Normal',
-    'Intense Emphasis': 'Normal',
-    'Subtle Reference': 'Normal',
-    'Intense Reference': 'Normal',
-    'Book Title': 'Normal',
-    'caption': 'Normal',
-    'Colorful Grid Accent 1': 'ColorfulGrid-Accent1',
-    'Heading 1 Char': 'Heading1Char',
-    'Heading 2 Char': 'Heading2Char',
-    'List Bullet': 'ListBullet',
-    'List Number': 'ListNumber',
-    'Body Text': 'BodyText',
-    'Body Text Char': 'BodyTextChar',
+    'Heading1': 'Heading1',
+    'Heading2': 'Heading2',
+    'Heading3': 'Heading3',
+    'Heading4': 'Heading4',
+    'Heading5': 'Heading5',
+    'TableNormal': 'TableNormal',
+    'NoList': 'NoList',
+    'Title': 'Title',
+    'SubTitle': 'SubTitle',
+    'Strong': 'Bold',
+    'Emphasis': 'Italic',
+    'NoSpacing': 'NoSpacing',
+    'BlockQuote': 'BlockQuote',
+    'LiteralBlock': 'LiteralBlock',
+    'BookTitle': 'BookTitle',
+    'ListBullet': 'ListBullet',
+    'ListNumber': 'ListNumber',
 }
+
+def norm_name(name, namespaces):
+    ns, name = name.split(':', 1)
+    ns = namespaces[ns]
+    return "{%s}%s" % (ns, name)
+
+
+def update_stylenames(style_file):
+    xmlcontent = open(style_file, 'r').read()
+    xml = etree.fromstring(xmlcontent)
+    style_elems = xml.xpath('w:style', namespaces=nsprefixes)
+    for style_elem in style_elems:
+        aliases_elems = style_elem.xpath('w:aliases', namespaces=nsprefixes)
+        if aliases_elems:
+            name = aliases_elems[0].attrib[norm_name('w:val', nsprefixes)]
+        else:
+            name_elem = style_elem.xpath('w:name', namespaces=nsprefixes)[0]
+            name = name_elem.attrib[norm_name('w:val', nsprefixes)]
+        value = style_elem.attrib[norm_name('w:styleId', nsprefixes)]
+        stylenames[name] = value
+        print "### '%s' = '%s'" % (name, value)
+
+
+import tempfile
+temp_dir = tempfile.mkdtemp(prefix='docx-')
+os.rmdir(temp_dir)
+shutil.copytree(TEMPLATE_DIR, temp_dir)
+set_template(temp_dir)
+# END of QUICK-HACK
 
 
 def opendocx(file):
@@ -189,7 +191,7 @@ def pagebreak(type='page', orient='portrait'):
         pagebreak.append(pPr)
     return pagebreak    
 
-def paragraph(paratext,style='Body Text',breakbefore=False):
+def paragraph(paratext,style='BodyText',breakbefore=False):
     '''Make a new paragraph element, containing a run, and some text. 
     Return the paragraph element.'''
     # Make our elements
@@ -203,7 +205,7 @@ def paragraph(paratext,style='Body Text',breakbefore=False):
         run.append(lastRenderedPageBreak)    
     text = makeelement('t',tagtext=paratext)
     pPr = makeelement('pPr')
-    style = stylenames.get(style, 'Body Text')
+    style = stylenames.get(style, 'BodyText')
     pStyle = makeelement('pStyle',attributes={'val':style})
     pPr.append(pStyle)
                 
@@ -242,7 +244,7 @@ def heading(headingtext,headinglevel):
     # Make our elements
     paragraph = makeelement('p')
     pr = makeelement('pPr')
-    style = stylenames.get('heading ' + str(headinglevel), 'Normal')
+    style = stylenames.get('Heading' + str(headinglevel), 'Normal')
     pStyle = makeelement('pStyle',attributes={'val': style})
     run = makeelement('r')
     text = makeelement('t',tagtext=headingtext)
