@@ -2,10 +2,12 @@
 from setuptools import setup, find_packages
 import os, sys
 
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
+
 version = '0.0.1'
 long_description = \
-        open(os.path.join("src","README.txt")).read() + \
-        open(os.path.join("src","TODO.txt")).read()
+        open(os.path.join(BASEDIR, "src", "README.txt")).read() + \
+        open(os.path.join(BASEDIR, "src", "TODO.txt")).read()
 
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
