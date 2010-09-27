@@ -96,6 +96,12 @@ You must set style names by below names on Word 2007::
 .. * BookTitle
 
 
+License
+========
+Licensed under the `MIT license <http://www.opensource.org/licenses/mit-license.php>`_ .
+See the LICENSE file for specific terms.
+
+
 Requirements
 ============
 
