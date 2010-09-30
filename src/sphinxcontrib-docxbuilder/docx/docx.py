@@ -565,12 +565,16 @@ def savedocx(document,coreprops,appprops,contenttypes,websettings,wordrelationsh
     
     # Add & compress support files
     files_to_ignore = ['.DS_Store'] # nuisance from some os's
+    files_to_skip = treesandfiles.values()
     for dirpath,dirnames,filenames in os.walk('.'):
         for filename in filenames:
             if filename in files_to_ignore:
                 continue
             templatefile = join(dirpath,filename)
-            archivename = templatefile[2:]
+            archivename = os.path.normpath(templatefile)
+            archivename = '/'.join(archivename.split(os.sep))  # multibyte ok?
+            if archivename in files_to_skip:
+                continue
             print 'Saving: '+archivename          
             docxfile.write(templatefile, archivename)
     print 'Saved new file to: '+docxfilename
