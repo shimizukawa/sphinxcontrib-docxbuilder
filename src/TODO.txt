@@ -3,13 +3,16 @@ Todos
 
 Functionals
 ------------
-* toctree generation (dispose toctree output? create by docx function?)
 * reset number for non-continuous numbered list
-* add page-break directive
+* set docx property from conf.py definition
+* use haeader and footer specified by template.dotx
+* toctree generation (dispose toctree output? create by docx function?)
+* add page-break directive (currently break by unit of reST file)
 * implement many many directives
     * note
     * warning
-    * code highlighting
+    * code highlighting, indented block
+    * exts: todos, blockdiag, sdedit, ...
     * and etc....
 * some emphasis (italic, bold)
 
@@ -28,4 +31,3 @@ Known Issues
     * literal-block
 * figure directive's caption become normal paragraph (not bundled with image).
 * image directive break docx format (maybe very large file are included)
-* generate broken docx file created by template.dotx.

@@ -12,6 +12,7 @@ Features
     * image and figure directive output
     * bullet-list and numbered-list output
     * table output (restrictive)
+* You can use dotx/docx file for style template.
 
 Currently, many directives and indented block are not work correctly, yet.
 
