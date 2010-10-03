@@ -221,25 +221,14 @@ def contenttypes():
     os.chdir(template_dir)
 
     filename = '[Content_Types].xml'
-    if os.path.exists(filename):
-        parts = dict([
-            (x.attrib['PartName'], x.attrib['ContentType'])
-            for x in etree.fromstring(open(filename).read()).xpath('*')
-            if 'PartName' in x.attrib
-        ])
-    else:
-        # for default template. FIXME: move these into '[Content_Types].xml'
-        parts = {
-            '/word/theme/theme1.xml':'application/vnd.openxmlformats-officedocument.theme+xml',
-            '/word/fontTable.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml',
-            '/docProps/core.xml':'application/vnd.openxmlformats-package.core-properties+xml',
-            '/docProps/app.xml':'application/vnd.openxmlformats-officedocument.extended-properties+xml',
-            '/word/document.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml',
-            '/word/settings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml',
-            '/word/numbering.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml',
-            '/word/styles.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml',
-            '/word/webSettings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml'
-            }
+    if not os.path.exists(filename):
+        raise RuntimeError('You need %r file in template' % filename)
+
+    parts = dict([
+        (x.attrib['PartName'], x.attrib['ContentType'])
+        for x in etree.fromstring(open(filename).read()).xpath('*')
+        if 'PartName' in x.attrib
+    ])
 
     # FIXME - doesn't quite work...read from string as temp hack...
     #types = makeelement('Types',nsprefix='ct')
@@ -534,22 +523,14 @@ def relationshiplist():
     os.chdir(template_dir)
 
     filename = 'word/_rels/document.xml.rels'
-    if os.path.exists(filename):
-        relationships = etree.fromstring(open(filename).read())
-        relationshiplist = [
-                [x.attrib['Type'], x.attrib['Target']]
-                for x in relationships.xpath('*')
-        ]
-    else:
-        # for default template. FIXME: move these into 'document.xml.rels'
-        relationshiplist = [
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering','numbering.xml'],
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles','styles.xml'],
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings','settings.xml'],
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings','webSettings.xml'],
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable','fontTable.xml'],
-        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme','theme/theme1.xml'],
-        ]
+    if not os.path.exists(filename):
+        raise RuntimeError('You need %r file in template' % filename)
+
+    relationships = etree.fromstring(open(filename).read())
+    relationshiplist = [
+            [x.attrib['Type'], x.attrib['Target']]
+            for x in relationships.xpath('*')
+    ]
 
     os.chdir(prev_dir)
     return relationshiplist
