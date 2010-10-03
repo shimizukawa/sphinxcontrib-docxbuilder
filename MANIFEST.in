@@ -3,5 +3,5 @@ include bootstrap.py
 include MANIFEST.in
 recursive-include examples/source *.*
 recursive-include src *.py *.txt
-recursive-include src/docx-0.0.1-py2.6.egg *
+recursive-include src/sphinxcontrib-docxbuilder/docx *
 
