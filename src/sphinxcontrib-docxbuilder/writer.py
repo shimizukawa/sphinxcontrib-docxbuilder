@@ -61,6 +61,8 @@ class DocxWriter(writers.Writer):
     def __init__(self, builder):
         writers.Writer.__init__(self)
         self.builder = builder
+        self.template_setup() # setup before call almost docx methods.
+
         dc = DocxContaner()
         dc.document = docx.newdocument()
         dc.docbody = dc.document.xpath(
@@ -70,8 +72,6 @@ class DocxWriter(writers.Writer):
         dc.contenttypes = docx.contenttypes()
         dc.websettings = docx.websettings()
         self.docx_container = dc
-
-        self.template_setup()
 
     def template_setup(self):
         dotx = self.builder.config['docx_template']

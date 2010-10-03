@@ -28,7 +28,7 @@ import sys, os
 extensions = ['sphinxcontrib-docxbuilder']
 
 # this 'docx_template' feature is bit broken yet.
-#docx_template = 'template.dotx'
+docx_template = 'template.docx'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

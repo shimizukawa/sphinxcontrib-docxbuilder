@@ -217,26 +217,41 @@ def paragraph(paratext,style='BodyText',breakbefore=False):
     return paragraph
 
 def contenttypes():
+    prev_dir = os.getcwd() # save previous working dir
+    os.chdir(template_dir)
+
+    filename = '[Content_Types].xml'
+    if os.path.exists(filename):
+        parts = dict([
+            (x.attrib['PartName'], x.attrib['ContentType'])
+            for x in etree.fromstring(open(filename).read()).xpath('*')
+            if 'PartName' in x.attrib
+        ])
+    else:
+        # for default template. FIXME: move these into '[Content_Types].xml'
+        parts = {
+            '/word/theme/theme1.xml':'application/vnd.openxmlformats-officedocument.theme+xml',
+            '/word/fontTable.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml',
+            '/docProps/core.xml':'application/vnd.openxmlformats-package.core-properties+xml',
+            '/docProps/app.xml':'application/vnd.openxmlformats-officedocument.extended-properties+xml',
+            '/word/document.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml',
+            '/word/settings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml',
+            '/word/numbering.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml',
+            '/word/styles.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml',
+            '/word/webSettings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml'
+            }
+
     # FIXME - doesn't quite work...read from string as temp hack...
     #types = makeelement('Types',nsprefix='ct')
     types = etree.fromstring('''<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"></Types>''')
-    parts = {
-        '/word/theme/theme1.xml':'application/vnd.openxmlformats-officedocument.theme+xml',
-        '/word/fontTable.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml',
-        '/docProps/core.xml':'application/vnd.openxmlformats-package.core-properties+xml',
-        '/docProps/app.xml':'application/vnd.openxmlformats-officedocument.extended-properties+xml',
-        '/word/document.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml',
-        '/word/settings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml',
-        '/word/numbering.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml',
-        '/word/styles.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml',
-        '/word/webSettings.xml':'application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml'
-        }
     for part in parts:
         types.append(makeelement('Override',nsprefix=None,attributes={'PartName':part,'ContentType':parts[part]}))
     # Add support for filetypes
     filetypes = {'rels':'application/vnd.openxmlformats-package.relationships+xml','xml':'application/xml','jpeg':'image/jpeg','gif':'image/gif','png':'image/png'}
     for extension in filetypes:
         types.append(makeelement('Default',nsprefix=None,attributes={'Extension':extension,'ContentType':filetypes[extension]}))
+
+    os.chdir(prev_dir)
     return types
 
 def heading(headingtext,headinglevel):
@@ -515,16 +530,30 @@ def websettings():
     return web
 
 def relationshiplist():
-    relationshiplist = [
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering','numbering.xml'],
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles','styles.xml'],
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings','settings.xml'],
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings','webSettings.xml'],
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable','fontTable.xml'],
-    ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme','theme/theme1.xml'],
-    ]
+    prev_dir = os.getcwd() # save previous working dir
+    os.chdir(template_dir)
+
+    filename = 'word/_rels/document.xml.rels'
+    if os.path.exists(filename):
+        relationships = etree.fromstring(open(filename).read())
+        relationshiplist = [
+                [x.attrib['Type'], x.attrib['Target']]
+                for x in relationships.xpath('*')
+        ]
+    else:
+        # for default template. FIXME: move these into 'document.xml.rels'
+        relationshiplist = [
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering','numbering.xml'],
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles','styles.xml'],
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings','settings.xml'],
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings','webSettings.xml'],
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable','fontTable.xml'],
+        ['http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme','theme/theme1.xml'],
+        ]
+
+    os.chdir(prev_dir)
     return relationshiplist
-    
+
 def wordrelationships(relationshiplist):
     '''Generate a Word relationships file'''
     # Default list of relationships
